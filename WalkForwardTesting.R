@@ -15,9 +15,29 @@ system("rm /home/ic10636/TR/longPositions.csv")
 
 system("rm /home/ic10636/TR/positions.csv")
 
-HDFC<-read.csv("/home/ic10636/TR/HDFC_2010_2012.csv", header=TRUE)
+#try(system("rm /home/ic10636/TR/results.csv"))
 
-HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_2010_2012.csv", header=TRUE)
+
+#Jan 2012 – Dec 2013; Jan 2014 – Jun 2014
+#Jul 2012 – Jun 2014; Jul 2014 – Dec 2014
+#Jan 2013 – Dec 2014; Jan 2015 – Jun 2015
+
+
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2014_Jun2014.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2014_Jun2014.csv", header=TRUE)
+
+
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2014_Dec2014.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2014_Dec2014.csv", header=TRUE)
+
+
+
+HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2015_Jun2015.csv", header=TRUE)
+
+HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2015_Jun2015.csv", header=TRUE)
+
 
 HDFC_dates=as.Date(HDFC[,1])
 
@@ -38,6 +58,8 @@ b<-as.quantmod.OHLC(b, col.names = c("Open", "High","Low", "Close","Volume", "Ad
 symbolLst<-c("HDFC","HDFCBANK")
 
 title<-c("HDFC vs HDFC Bank")
+
+results<-data.frame(lookback=numeric(),nStd=numeric(),SharpeRatio=numeric())
 
 myfunction <- function(lookback, nStd) {
 
@@ -242,14 +264,31 @@ zooTradeVec <- na.omit(zooTradeVec)
 #charts.PerformanceSummary(as.data.frame(as.character(index(zooTradeVec)), coredata(zooTradeVec)),main="Performance of Statarb Strategy",geometric=FALSE)
 
 cat("Sharpe Ratio")
-print(SharpeRatio.annualized(zooTradeVec))
-#}
+print(SharpeRatio.annualized(tradingRetZoo))
+
+
+results<<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio.annualized(tradingRetZoo)),nrow=1)))
+
+#return(SharpeRatio.annualized(tradingRetZoo))
+
+#write.table("lookback", append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table(lookback, append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table("nStd", append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table(nStd, append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table("Sharpe Ratio", append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table(SharpeRatio.annualized(tradingRetZoo), append = TRUE, "/home/ic10636/TR/results.csv")
 
 } # myfunction ends here
 
 #Exhaustive search for parameter optimization
-for (lookback in seq(5,150, by = 5)) {
-for (nStd in c(.5,1,1.5,2)){
-myfunction(lookback, nStd)
-                            }
-                                      }
+
+myfunction(70, .5)
+myfunction(75, .5)
+myfunction(70, 1.5)
+
+colnames(results) <- c("lookback", "nStd", "SharpeRatio")
+
+print(results)
+
+#write.table("results", append = TRUE, "/home/ic10636/TR/results.csv")
+#write.table(results, append = TRUE, "/home/ic10636/TR/results.csv")
