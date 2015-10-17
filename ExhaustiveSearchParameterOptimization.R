@@ -21,13 +21,21 @@ try(system("rm /home/ic10636/TR/results.csv"))
 #Jul 2012 – Jun 2014; Jul 2014 – Dec 2014
 #Jan 2013 – Dec 2014; Jan 2015 – Jun 2015
 
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2007_Dec2008.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2007_Dec2008.csv", header=TRUE)
+
 #HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2012_Jun2014.csv", header=TRUE)
 
 #HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2012_Jun2014.csv", header=TRUE)
 
-HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2013_Dec2014.csv", header=TRUE)
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2013_Dec2014.csv", header=TRUE)
 
-HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2013_Dec2014.csv", header=TRUE)
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2013_Dec2014.csv", header=TRUE)
+
+HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2010_Jun2010.csv", header=TRUE)
+
+HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2010_Jun2010.csv", header=TRUE)
 
 HDFC_dates=as.Date(HDFC[,1])
 
@@ -256,7 +264,7 @@ zooTradeVec <- na.omit(zooTradeVec)
 cat("Sharpe Ratio")
 print(SharpeRatio.annualized(tradingRetZoo))
 
-return(SharpeRatio.annualized(tradingRetZoo))
+return(c(SharpeRatio.annualized(tradingRetZoo), Return.annualized(tradingRetZoo), StdDev.annualized(tradingRetZoo)))
 
 #write.table("lookback", append = TRUE, "/home/ic10636/TR/results.csv")
 #write.table(lookback, append = TRUE, "/home/ic10636/TR/results.csv")
@@ -270,11 +278,13 @@ return(SharpeRatio.annualized(tradingRetZoo))
 #Exhaustive search for parameter optimization
 for (lookback in seq(5,150, by = 5)) {
 for (nStd in c(.5,1,1.5,2)){
-SharpeRatio = myfunction(lookback, nStd)
+SharpeRatio = myfunction(lookback, nStd)[1]
+Return = myfunction(lookback, nStd)[2]
+StdDev = myfunction(lookback, nStd)[3]
 
-results<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio),nrow=1)))
+results<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio, Return, StdDev),nrow=1)))
                             }
                                       }
-colnames(results) <- c("lookback", "nStd", "SharpeRatio")
+colnames(results) <- c("lookback", "nStd", "SharpeRatio","Return","StdDev")
 write.table("results", append = TRUE, "/home/ic10636/TR/results.csv")
 write.table(results, append = TRUE, "/home/ic10636/TR/results.csv")
