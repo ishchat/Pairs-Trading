@@ -17,27 +17,49 @@ system("rm /home/ic10636/TR/positions.csv")
 
 #try(system("rm /home/ic10636/TR/results.csv"))
 
-
 #Jan 2012 – Dec 2013; Jan 2014 – Jun 2014
 #Jul 2012 – Jun 2014; Jul 2014 – Dec 2014
 #Jan 2013 – Dec 2014; Jan 2015 – Jun 2015
 
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2008_Dec2009.csv", header=TRUE)
 
-#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2014_Jun2014.csv", header=TRUE)
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2008_Dec2009.csv", header=TRUE)
 
-#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2014_Jun2014.csv", header=TRUE)
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2010_Jun2010.csv", header=TRUE)
 
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2010_Jun2010.csv", header=TRUE)
 
-#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2014_Dec2014.csv", header=TRUE)
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2008_Jun2010.csv", header=TRUE)
 
-#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2014_Dec2014.csv", header=TRUE)
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2008_Jun2010.csv", header=TRUE)
 
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2010_Dec2010.csv", header=TRUE)
 
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2010_Dec2010.csv", header=TRUE)
 
-HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2015_Jun2015.csv", header=TRUE)
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2009_Dec2010.csv", header=TRUE)
 
-HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2015_Jun2015.csv", header=TRUE)
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2009_Dec2010.csv", header=TRUE)
 
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2011_Jun2011.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2011_Jun2011.csv", header=TRUE)
+
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2009_Jun2011.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2009_Jun2011.csv", header=TRUE)
+
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jul2011_Dec2011.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jul2011_Dec2011.csv", header=TRUE)
+
+#HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2010_Dec2011.csv", header=TRUE)
+
+#HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2010_Dec2011.csv", header=TRUE)
+
+HDFC<-read.csv("/home/ic10636/TR/HDFC_Jan2012_Jun2012.csv", header=TRUE)
+
+HDFCBANK<-read.csv("/home/ic10636/TR/HDFCBANK_Jan2012_Jun2012.csv", header=TRUE)
 
 HDFC_dates=as.Date(HDFC[,1])
 
@@ -59,7 +81,7 @@ symbolLst<-c("HDFC","HDFCBANK")
 
 title<-c("HDFC vs HDFC Bank")
 
-results<-data.frame(lookback=numeric(),nStd=numeric(),SharpeRatio=numeric())
+results<-data.frame(lookback=numeric(),nStd=numeric(),SharpeRatio=numeric(),Return=numeric(),StdDev=numeric())
 
 myfunction <- function(lookback, nStd) {
 
@@ -266,8 +288,13 @@ zooTradeVec <- na.omit(zooTradeVec)
 cat("Sharpe Ratio")
 print(SharpeRatio.annualized(tradingRetZoo))
 
+cat("Annualized Returns")
+print(Return.annualized(tradingRetZoo))
 
-results<<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio.annualized(tradingRetZoo)),nrow=1)))
+cat("Annualized Std Dev")
+print(StdDev.annualized(tradingRetZoo))
+
+results<<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio.annualized(tradingRetZoo), Return.annualized(tradingRetZoo), StdDev.annualized(tradingRetZoo)),nrow=1)))
 
 #return(SharpeRatio.annualized(tradingRetZoo))
 
@@ -280,13 +307,21 @@ results<<-rbind(results, data.frame(matrix(c(lookback, nStd, SharpeRatio.annuali
 
 } # myfunction ends here
 
-#Exhaustive search for parameter optimization
 
-myfunction(70, .5)
-myfunction(75, .5)
-myfunction(70, 1.5)
+myfunction(15,1)
+myfunction(15,1.5)
+myfunction(25,1.5)
+myfunction(25,1)
+myfunction(20,1)
+myfunction(15,0.5)
+myfunction(20,1.5)
+myfunction(20,2)
+myfunction(15,2)
+myfunction(50,1)
+myfunction(55,1)
 
-colnames(results) <- c("lookback", "nStd", "SharpeRatio")
+
+colnames(results) <- c("lookback", "nStd", "SharpeRatio", "Return", "StdDev")
 
 print(results)
 
